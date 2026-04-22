@@ -81,6 +81,27 @@
             return intervals.map(interval => NOTES[(rootIdx + interval) % 12]);
         };
 
+        // Die Komponente wurde nach außen verschoben, damit sie beim Hochzählen 
+        // des Timers nicht jede Sekunde neu geladen wird.
+        const NoteMarker = ({ isFound, isWrong, note }) => {
+            if (isFound) {
+                return (
+                    // Animation (style) hier komplett entfernt, damit der grüne Punkt völlig starr bleibt
+                    <div className="absolute z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-500 border-2 border-slate-900 flex items-center justify-center text-sm md:text-base font-bold text-white shadow-[0_0_10px_rgba(16,185,129,0.8)]">
+                        {note}
+                    </div>
+                );
+            }
+            if (isWrong) {
+                return (
+                    <div className="absolute z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-500 border-2 border-slate-900 flex items-center justify-center shadow-[0_0_15px_rgba(244,63,94,0.8)]" style={{animation: 'zoomIn 0.15s ease-out forwards'}}>
+                        <IconXCircle size={20} className="text-white" />
+                    </div>
+                );
+            }
+            return null;
+        };
+
         function App() {
             const [gameState, setGameState] = useState('idle');
             const [currentScale, setCurrentScale] = useState({ root: 'C', type: 'Dur' });
@@ -188,24 +209,6 @@
                 const m = Math.floor(seconds / 60);
                 const s = seconds % 60;
                 return `${m}:${s.toString().padStart(2, '0')}`;
-            };
-
-            const NoteMarker = ({ isFound, isWrong, note }) => {
-                if (isFound) {
-                    return (
-                        <div className="absolute z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-emerald-500 border-2 border-slate-900 flex items-center justify-center text-sm md:text-base font-bold text-white shadow-[0_0_10px_rgba(16,185,129,0.8)]" style={{animation: 'zoomIn 0.15s ease-out forwards'}}>
-                            {note}
-                        </div>
-                    );
-                }
-                if (isWrong) {
-                    return (
-                        <div className="absolute z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-rose-500 border-2 border-slate-900 flex items-center justify-center shadow-[0_0_15px_rgba(244,63,94,0.8)]" style={{animation: 'zoomIn 0.15s ease-out forwards'}}>
-                            <IconXCircle size={20} className="text-white" />
-                        </div>
-                    );
-                }
-                return null;
             };
 
             return (
